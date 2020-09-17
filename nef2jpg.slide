@@ -11,7 +11,14 @@ Stands for "Nikon Electronic Format"
 - Contain all the image information captured by the camera's sensor
 - Includes metadata about the camera and its associated settings
 
-* File structures
+JPG is actually just a compression method
+
+- Convert from RGB colour space to YCbCr
+- Apply downsampling to result
+- Use discrete cosine transform
+- Apply quantanization
+- Encode result
+- Include file header
 
 * How is NEF data structred?
 
