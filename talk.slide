@@ -3,13 +3,15 @@ Converting NEF images to JPGs
 Adam Stringer
 18 Sep 2020
 
-* What is an NEF file anyway?
+* What are NEF and JPG anyway?
 
 Stands for "Nikon Electronic Format"
 
 - Exclusive to Nikon cameras, the NEF is Nikon's RAW file format
 - Contain all the image information captured by the camera's sensor
 - Includes metadata about the camera and its associated settings
+
+* File structures
 
 * How is NEF data structred?
 
@@ -20,4 +22,53 @@ Stands for "Nikon Electronic Format"
 
 * The NEF file content uses the TIFF specification to group/organise the data
 
-- TIFF file format is essentially 
+- TIFF file structure is made up of connected IFDs (Image File Directory) 
+- A TIFF file begins with an 8 byte image file header
+
+.image images/tiffheader.png
+
+- Bytes 0-1 specify endian order (legal values are "II"(4949) or "MM"(4D4D))
+- Bytes 2-3 is the TIFF magic number (42, hilarious right?)
+- Bytes 4-7 is the relative offset from header end to the first IFD (in byte units)
+
+* IFD structure
+
+- Bytes 0-1 specify the number of entries within this directory (in this case it is 27)
+.image images/firstifd.png
+- The next 12 bytes contains the first entry
+- Each entry are next to each other except for the last one
+- Bytes 0-1 of the entry are the EXIF tag byte to denote what data the entry contains
+- Bytes 2-3 Field type (in this case 4)
+- Bytes 4-7 The number of values (in this case 1)
+- Bytes 8-11 Is the file offset for the value of the field or the value if it fits in 4 bytes
+
+In this case 0x00FE is data "SubfileType", is type 4 so size is uint32 and value is 0x1 (Reduced Res Image)
+
+* IFD chaining
+
+.image images/ifdchaindiagram.png 580 _
+
+* What kind of data is there to find?
+
+.image images/exiftagslist.png 200 _
+- GPS coords if camera collects that information
+- The image data collected by the camera's sensor matrix 
+- A thumbnail sized version of the image in JPG format ... interesting?
+
+* Image data
+
+- The raw image data is pixel data stored in the YCbCr colour space
+.image images/ycbcrpositioning.png 390 _
+But wait, what are these tags "JpgFromRawLength" and "JpgFromRawLength"...
+
+* They describe the location and size of the same raw image within the NEF file already compressed into JPEG...
+.image https://media.giphy.com/media/i4OfVOFke0jxm/giphy.gif 400 _
+
+* How to "convert" NEF images into JPGs summary
+
+Seek to start and read to end of JPG data and save to a file. That's it!
+
+
+* Credits
+
+Phil Harvey for EXIF tag and value [[https://exiftool.org/TagNames/EXIF.html][table]]
