@@ -75,6 +75,8 @@ But wait, what are these tags "JpgFromRawLength" and "JpgFromRawLength"...
 
 Seek to start and read to end of JPG data and save to a file. That's it!
 
+If you want to see [[https://github.com/tacusci/clover/blob/master/img/ctimage.go][some code]]...
+
 
 * Credits
 
