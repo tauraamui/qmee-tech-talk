@@ -1,0 +1,23 @@
+Converting NEF images to JPGs
+
+Adam Stringer
+18 Sep 2020
+
+* What is an NEF file anyway?
+
+Stands for "Nikon Electronic Format"
+
+- Exclusive to Nikon cameras, the NEF is Nikon's RAW file format
+- Contain all the image information captured by the camera's sensor
+- Includes metadata about the camera and its associated settings
+
+* How is NEF data structred?
+
+- Metadata is stored using a key value pair structure using tags defined by the EXIF standard 
+- The tag key is a specific byte value so you need to map these to a sensible name
+
+.image images/exiftagsexample.png _ 400
+
+* The NEF file content uses the TIFF specification to group/organise the data
+
+- TIFF file format is essentially 
