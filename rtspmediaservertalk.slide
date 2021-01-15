@@ -1,0 +1,77 @@
+Persisting RTSP to disk with OpenCV and How to playback over MSE/DASH
+
+Adam Stringer
+15 Jan 2021
+
+* What is RTSP?
+
+- RTSP stands for (Real Time Streaming Protocol)
+
+* What is it used for?
+
+- Streaming footage from IP cameras
+- And I think that's it
+
+How does it work?
+
+- I am not sure. It's pretty complicated.
+
+* Reading RTSP with OpenCV
+
+- Using OpenCV bindings for Go (perfect concurrency model for our purposes)
+
+: In our case we're using Go bindings for OpenCV, because the Go concurrency
+: model is perfect for what we want. Goroutines are like traditional threads
+: that you find in other high level languages but much much cheaper to
+: instaniate, and channels make it safe and easy to control and orchistrate
+: data transfer between them.
+
+: So there is a working implementation in Go for the media server which
+: has a config file which points to all of the cameras that you want to
+: stream from.
+
+- Simplified code from media server
+.code code/readingrtsp.go
+
+- Reading from the RTSP stream is best done on a separate goroutine
+
+.code code/displaystreamincvwindow.go
+
+: Reading from the RTSP stream is blocking and so if you want to carry out
+: other work the rest of your program probably won't have time inbetween reads.
+: In our media server implementation it reads the stream on one goroutine but
+: sends the frames to a shared "buffer" channel to be used elsewhere.
+: The second code snippet is a copy of an example code snippet from the GoCV library
+: website of how you can show the current live stream in a window. If you actually
+: run this example you can clearly see that it lags a good 7 seconds behind the live.
+
+* Saving RTSP stream to disk per camera device
+
+.code code/persistingrtsp.go
+
+: For every separate camera we read from the same streaming buffer that the other
+: goroutine is writing the latest frames to. Sending into a channel is blocked until
+: all of the channel's existing content has been read. To reduce the chance of any
+: stream data from being missed due to being too slow to write to disk, in our case
+: we're making sure the channel is created with a size of 6.
+
+: We're writing clip files which contain just 2 seconds of footage. Will help reduce
+: lost footage in case the service crashes, and makes it easier to use streaming protocol
+: to serve the clips later
+
+* Playback over DASH
+
+Dash stands for (Dynamic Adaptive Streaming over HTTP)
+
+- Adapts the quality of playback depending on user's speed
+
+: It is used by modern video players like Youtube's video player
+: to adapt the playback quality depending on the user's internet
+: connection speed.
+
+How does it work?
+
+- Generate an MPD (Media Presentation Description) or simply a "manifest"
+- Use existing JS based web player of your choice
+- Point the web player at the mpd's location
+- Media player downloads clips and plays as single video
