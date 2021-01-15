@@ -3,6 +3,15 @@ Persisting RTSP to disk with OpenCV and How to playback over MSE/DASH
 Adam Stringer
 15 Jan 2021
 
+* Why oh why?
+
+Making a homemade surveillance system :)
+- Want something to work on in spare time
+- A good excuse for a Go project
+- Productive as can feel safer about going away
+- Helps out the neighbors, maybe...
+- Avoid cloud hosting costs
+
 * What is RTSP?
 
 - RTSP stands for (Real Time Streaming Protocol)
@@ -23,7 +32,7 @@ How does it work?
 : In our case we're using Go bindings for OpenCV, because the Go concurrency
 : model is perfect for what we want. Goroutines are like traditional threads
 : that you find in other high level languages but much much cheaper to
-: instaniate, and channels make it safe and easy to control and orchistrate
+: instantiate, and channels make it safe and easy to control and orchestrate
 : data transfer between them.
 
 : So there is a working implementation in Go for the media server which
@@ -57,7 +66,8 @@ How does it work?
 
 : We're writing clip files which contain just 2 seconds of footage. Will help reduce
 : lost footage in case the service crashes, and makes it easier to use streaming protocol
-: to serve the clips later
+: to serve the clips later. It also makes it easier to post process the clips to do
+: motion detection and object categorisation.
 
 * Playback over DASH
 
@@ -75,3 +85,38 @@ How does it work?
 - Use existing JS based web player of your choice
 - Point the web player at the mpd's location
 - Media player downloads clips and plays as single video
+
+* Generate manifest file
+
+- Using "shaka-packager"
+
+.code code/runningpackager.sh
+
+- Example manifest output
+
+.code code/manifestexample.mpd
+
+: Long term I would like the media server to be able to generate this manifest file
+: without the need of shaka-packager, but for now it's unclear how it works out
+: the required values and what subtle changes it seems to be making to the video clips
+
+* Give the MPD to your DASH supported web player of choice
+
+.code code/jsplayer.html
+
+* In the olden days
+
+.code code/simplevideo.html
+
+: Completely useless for our purposes. It does have auto buffering built in
+: but we can't use this solution unless we combine all of the stored clips into
+: one video.
+
+* Attempt at a "demo"
+
+: REMEMBER TO MENTION BIG BUCK BUNNY VIDEO!
+: Long term plan is to have a UI that you can log into to view each camera's playback
+: as well as a live feed, and to give the neighbours their own logins to submit remove
+: request tickets for review.
+
+* Questions?

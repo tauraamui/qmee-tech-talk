@@ -1,0 +1,11 @@
+<div>
+    <video id="videoPlayer" controls></video>
+</div>
+<script src="yourPathToDash/dash.all.min.js"></script>
+<script>
+    (function () {
+        var url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
+        var player = dashjs.MediaPlayer().create();
+        player.initialize(document.querySelector("#videoPlayer"), url, true);
+    })();
+</script>

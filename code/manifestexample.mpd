@@ -1,0 +1,9 @@
+<AdaptationSet id="0" contentType="video" width="240" height="160" frameRate="15360/512" subsegmentAlignment="true" par="3:2">
+  <Representation id="0" bandwidth="88792" codecs="avc1.64000c" mimeType="video/mp4" sar="1:1">
+    <BaseURL>2021-01-13 12.16.12.mp4</BaseURL>
+    <SegmentBase indexRange="864-907" timescale="15360">
+      <Initialization range="0-863"/>
+    </SegmentBase>
+  </Representation>
+  ...
+</AdaptationSet>
